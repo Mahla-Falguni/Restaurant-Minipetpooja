@@ -21,7 +21,8 @@ export const createTable = async (req, res, next) => {
 
         const existing = await Table.findOne({
             restaurant_id: req.user.restaurant_id,
-            table_number: table_number.trim()
+            table_number: table_number.trim(),
+            is_active: true
         });
 
         if (existing) {

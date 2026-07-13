@@ -60,7 +60,10 @@ const tableSchema = new mongoose.Schema(
     }
 );
 
-tableSchema.index({ restaurant_id: 1, table_number: 1 }, { unique: true });
+tableSchema.index(
+    { restaurant_id: 1, table_number: 1 },
+    { unique: true, partialFilterExpression: { is_active: true } }
+);
 tableSchema.index({ restaurant_id: 1, zone: 1 });
 
 export default mongoose.model("Table", tableSchema);
