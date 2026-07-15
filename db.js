@@ -1,5 +1,10 @@
 import mongoose from "mongoose";
 
+// Register connection error listener to prevent unhandled process exit
+mongoose.connection.on("error", (err) => {
+  console.error("Mongoose connection event error:", err.message);
+});
+
 const connectDB = async () => {
   try {
     const conn = await mongoose.connect(process.env.MONGO_URI, {
@@ -10,7 +15,7 @@ const connectDB = async () => {
     console.log(`MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {
     console.error("MongoDB Connection Error:", error.message);
-    throw error;
+    // Don't throw to prevent unhandled rejection crashes in serverless scope
   }
 };
 
