@@ -47,11 +47,23 @@ const app = express();
 ============================== */
 
 
+const allowedOrigins = [
+  "https://frontend-chi-pink-64.vercel.app",
+  "https://frontend-git-main-mahla-falgunis-projects.vercel.app",
+  "https://restaurant-minipetpooja-frontend.vercel.app",
+  "http://localhost:5173"
+];
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || "http://localhost:5173",
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin) || origin.endsWith(".vercel.app")) {
+      return callback(null, true);
+    }
+    return callback(new Error("Not allowed by CORS"));
+  },
   credentials: true,
-})
-);
+}));
 
 /*
 =========================================
