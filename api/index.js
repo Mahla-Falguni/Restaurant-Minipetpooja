@@ -4,6 +4,11 @@ import connectDB from "../db.js";
 let isConnected = false;
 
 export default async function handler(req, res) {
+  // Return 200 OK immediately for OPTIONS preflight requests to bypass DB connection
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
   // Ensure database connection is active and reused
   if (!isConnected) {
     try {
