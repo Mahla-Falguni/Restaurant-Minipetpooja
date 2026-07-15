@@ -5,6 +5,9 @@ import cookieParser from "cookie-parser";
 import path from "path";
 import { fileURLToPath } from "url";
 
+import dns from "dns";
+import net from "net";
+
 // Routes
 import authRoutes from "./routes/authRoutes.js";
 import restaurantRoutes from "./routes/restaurantRoutes.js";
@@ -73,6 +76,49 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.get("/", (req, res) => {
   res.status(200).json({
     success: true, message: "Restaurant POS API Running 🚀",
+  });
+});
+
+app.get("/api/test-network", (req, res) => {
+  const host = "ac-lhtm1yi-shard-00-00.mtpoaoa.mongodb.net";
+  const port = 27017;
+  
+  dns.lookup(host, (dnsErr, address, family) => {
+    if (dnsErr) {
+      return res.status(500).json({ success: false, phase: "dns", error: dnsErr.message });
+    }
+    
+    const socket = new net.Socket();
+    socket.setTimeout(2500);
+    
+    socket.connect(port, address, () => {
+      socket.destroy();
+      return res.status(200).json({
+        success: true,
+        phase: "tcp",
+        message: `Successfully connected to ${host} (${address}) on port ${port}!`
+      });
+    });
+    
+    socket.on("error", (tcpErr) => {
+      socket.destroy();
+      return res.status(500).json({
+        success: false,
+        phase: "tcp",
+        resolvedAddress: address,
+        error: tcpErr.message
+      });
+    });
+    
+    socket.on("timeout", () => {
+      socket.destroy();
+      return res.status(500).json({
+        success: false,
+        phase: "tcp",
+        resolvedAddress: address,
+        error: "Connection timed out"
+      });
+    });
   });
 });
 
