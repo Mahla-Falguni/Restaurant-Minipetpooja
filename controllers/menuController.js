@@ -444,7 +444,12 @@ export const getRestaurantByTable = async (req, res, next) => {
     try {
         const { tableCode } = req.params;
 
-        const table = await Table.findOne({ table_code: tableCode });
+        let table = await Table.findOne({ table_code: tableCode });
+
+        // If not found by table_code, try by _id as a fallback
+        if (!table && mongoose.Types.ObjectId.isValid(tableCode)) {
+            table = await Table.findById(tableCode);
+        }
 
         if (!table) {
             return sendResponse(res, 404, false, "Invalid QR Code");
