@@ -3,6 +3,7 @@ import Restaurant from "../models/Restaurant.js";
 import Category from "../models/Category.js";
 import Table from "../models/Table.js"
 import deleteLocalFile from "../utils/deleteLocalFile.js";
+import mongoose from "mongoose";
 
 import uploadToCloudinary from "../utils/uploadToCloudinary.js";
 import sendResponse from "../utils/sendResponse.js";
