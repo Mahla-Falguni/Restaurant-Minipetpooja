@@ -18,7 +18,7 @@ export const getPublicRestaurants = async (req, res, next) => {
 export const getPublicRestaurantTables = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const tables = await Table.find({ restaurant_id: id, is_active: true }).select("table_number seating_capacity zone status");
+    const tables = await Table.find({ restaurant_id: id, is_active: true }).select("table_number table_code seating_capacity zone status");
     sendResponse(res, 200, true, "Tables fetched successfully", tables);
   } catch (error) {
     next(error);
