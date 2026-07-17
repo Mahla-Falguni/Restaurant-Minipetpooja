@@ -6,6 +6,11 @@ mongoose.connection.on("error", (err) => {
 });
 
 const connectDB = async () => {
+  if (mongoose.connection.readyState === 1) {
+    console.log("MongoDB is already connected.");
+    return;
+  }
+
   try {
     const conn = await mongoose.connect(process.env.MONGO_URI, {
       family: 4,
@@ -15,7 +20,7 @@ const connectDB = async () => {
     console.log(`MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {
     console.error("MongoDB Connection Error:", error.message);
-    // Don't throw to prevent unhandled rejection crashes in serverless scope
+    throw error;
   }
 };
 

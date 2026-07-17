@@ -26,14 +26,18 @@ export default async function handler(req, res) {
   // Ensure database connection is active and reused
   if (!isConnected) {
     const maskedUri = process.env.MONGO_URI ? process.env.MONGO_URI.replace(/:([^@]+)@/, ":******@") : "undefined";
-    console.log(`Connecting to database asynchronously with URI: ${maskedUri}`);
-    connectDB()
-      .then(() => {
-        isConnected = true;
-      })
-      .catch((err) => {
-        console.error("Database connection failed asynchronously:", err.message);
+    console.log(`Connecting to database with URI: ${maskedUri}`);
+    try {
+      await connectDB();
+      isConnected = true;
+    } catch (err) {
+      console.error("Database connection failed in serverless handler:", err.message);
+      return res.status(500).json({
+        success: false,
+        message: "Database connection failed",
+        error: err.message
       });
+    }
   }
 
   // Forward the request to the Express application
