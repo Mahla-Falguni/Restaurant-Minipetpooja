@@ -69,11 +69,15 @@ POST /api/auth/login
 
 export const login = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, role } = req.body;
     const user = await User.findOne({ email });
 
     if (!user) {
       return sendResponse(res, 400, false, "Invalid Credentials");
+    }
+
+    if (role && user.role !== role) {
+      return sendResponse(res, 400, false, `Access denied: you are not registered as ${role}`);
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
