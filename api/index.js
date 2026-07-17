@@ -4,8 +4,22 @@ import connectDB from "../db.js";
 let isConnected = false;
 
 export default async function handler(req, res) {
-  // Return 200 OK immediately for OPTIONS preflight requests to bypass DB connection
+  // Return 200 OK immediately for OPTIONS preflight requests to bypass DB connection but pass CORS checks
   if (req.method === "OPTIONS") {
+    const origin = req.headers.origin;
+    const allowedOrigins = [
+      "https://frontend-chi-pink-64.vercel.app",
+      "https://frontend-git-main-mahla-falgunis-projects.vercel.app",
+      "https://restaurant-minipetpooja-frontend.vercel.app",
+      "http://localhost:5173"
+    ];
+
+    if (origin && (allowedOrigins.includes(origin) || origin.endsWith(".vercel.app"))) {
+      res.setHeader("Access-Control-Allow-Origin", origin);
+      res.setHeader("Access-Control-Allow-Credentials", "true");
+      res.setHeader("Access-Control-Allow-Methods", "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS");
+      res.setHeader("Access-Control-Allow-Headers", req.headers["access-control-request-headers"] || "Content-Type, Authorization, X-Requested-With");
+    }
     return res.status(200).end();
   }
 
