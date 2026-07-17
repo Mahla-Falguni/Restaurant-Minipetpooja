@@ -64,7 +64,7 @@ export const createPublicReservation = async (req, res, next) => {
       tables_assigned: [],
       zone_preference: zone_preference || "",
       special_requests: special_requests || "",
-      source: "Web/Public",
+      source: "Website",
       status: "Requested",
     });
 
